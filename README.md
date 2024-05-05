@@ -3,5 +3,3 @@ Elite Game Testers --> Extract from the 7z and run the exe as is in the folder w
 
 TO-DO:
 
-
-Add appropriate licensing
