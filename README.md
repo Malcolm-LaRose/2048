@@ -1,1 +1,7 @@
-Guinea Pigs --> Please use the exe or extract it from the 7z
+Elite Game Testers --> Extract from the 7z and run the exe as is in the folder with other files
+
+
+TO-DO:
+
+
+Add appropriate licensing
