@@ -2,8 +2,8 @@
 #include "Color.h"
 
 #include <SDL.h>
-// #include <SDL_syswm.h> --> Maybe not important?
-#include <SDL_ttf.h> // Can't tell if working?
+// #include <SDL_syswm.h> 
+#include <SDL_ttf.h> // Can't tell if working? --> Doesn't appear to be
 
 #include <cstdio>
 #include <memory>
@@ -273,9 +273,6 @@ public:
 	}
 
 	void placeRandomCell() {
-		if (isFull()) {
-			// exit(0); --> play again
-		}
 
 		int randRow, randCol;
 		do {
@@ -461,13 +458,11 @@ public:
 			}
 		}
 
-		fflush(stdout);
+		// fflush(stdout);
 		// printf("%i", filledCells);
 
 
 		if (filledCells == capacity) {
-			printf("Game over, man!");
-			system("pause");
 			return true;
 		}
 		
@@ -889,6 +884,23 @@ public:
 
 	~MySDL_EventHandler() {}
 
+
+	void pollRestart() {
+		while (SDL_PollEvent(&event) != 0) {
+
+			if (event.type == SDL_QUIT) {
+				renderer->quitSDL();
+			}
+
+			else if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
+				if (event.key.keysym.sym == SDLK_r) {
+					playAgain();
+				}
+			}
+		}
+	}
+
+
 	void pollEvent() {
 
 
@@ -900,18 +912,6 @@ public:
 			if (event.type == SDL_QUIT) {
 				renderer->quitSDL();
 			}
-
-			//else if (event.type == SDL_MOUSEBUTTONDOWN) {
-			//
-			//	// Get coordinates
-			//	std::pair<int, int> mousePosition = getMousePosition();
-			//
-			//	 printf("Mouse position - x: %d, y: %d\n", mousePosition.first, mousePosition.second);
-			//
-			//	  grid.placeRandomCell();
-			//	  grid.logGridState();
-			//
-			//}
 
 			else if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
 				switch (event.key.keysym.sym) {
@@ -944,12 +944,12 @@ public:
 				}
 			}
 
-			playAgain();
-
+			playAgain(); // Resets grid
+			// placeRandom(); // Place a random cell
 		}
 	}
 
-	void playAgain() {
+	void playAgain() { // Resets grid
 		if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
 			switch (event.key.keysym.sym) {
 			case SDLK_r:
@@ -957,6 +957,16 @@ public:
 				grid.getScore().resetScore();
 				break;
 			
+			}
+		}
+	}
+
+	void placeRandom() { // Debug function
+		if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
+			switch (event.key.keysym.sym) {
+			case SDLK_f:
+				grid.placeRandomCell();
+				break;
 			}
 		}
 	}
@@ -1010,6 +1020,15 @@ public:
 			// Check if quit event occurred
 			if (SDL_QuitRequested()) {
 				stop();
+			}
+
+			if (grid.isFull()) {
+				system("cls");
+				printf("Game over, man!\n");
+				printf("Press r to play again!\n");
+				while (grid.isFull()) {
+					evHandler->pollRestart();
+				}
 			}
 
 		}
