@@ -1,15 +1,3 @@
-Using https://www.libsdl.org/license.php SDL 2.x
-
-
-
-Using https://github.com/libsdl-org/SDL_ttf/blob/main/LICENSE.txt 2.x
-
-
-
-Montserrat font license provided in OFL.txt
-
-
-
 Copyright (c) 2024 Malcolm LaRose
 
 This software is provided 'as-is', without any express or implied
@@ -27,3 +15,15 @@ freely, subject to the following restrictions:
 2. Altered source versions must be plainly marked as such, and must not be
    misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
+
+
+Using https://www.libsdl.org/license.php SDL 2.x
+
+
+
+Using https://github.com/libsdl-org/SDL_ttf/blob/main/LICENSE.txt 2.x
+
+
+
+Montserrat font license provided in OFL.txt
+
