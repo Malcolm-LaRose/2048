@@ -469,7 +469,7 @@ public:
 
 	bool isFull() {
 		const int capacity = rows * cols; // Total number of cells on the board
-		int filledCells = 1; // Counter for filled cells
+		int filledCells = 0; // Counter for filled cells
 
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
@@ -479,12 +479,16 @@ public:
 			}
 		}
 
-		// fflush(stdout);
-		// printf("%i", filledCells);
-
-
 		if (filledCells == capacity) {
-			return true;
+			// AND there are no viable moves left --> No two adjacent cells are identical
+			for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < cols; j++) {
+					Cell& chkCell = getCellAt(i, j);
+					if (!adjacentLikeCells(chkCell)) {
+						return true;
+					}
+				}
+			}
 		}
 		
 		else {
@@ -511,6 +515,49 @@ private:
 
 	std::optional<Cell> getPotentialCellAt(int row, int col) {
 		return gridData[row][col];
+	}
+
+	bool adjacentLikeCells(Cell& chkCell) {
+
+		int row = chkCell.getRow();
+		int col = chkCell.getCol();
+
+		// Check up (r - 1)
+		if (row > 0) { // If we aren't on the top (bottom) row
+			if (checkForCellAt(row - 1, col)) { // If there is a cell
+				if (chkCell.getNumber() == getCellAt(row - 1, col).getNumber()) { // If those cells are equal
+					return true;
+				}
+			}
+		}
+
+		// Check left
+		else if (col > 0) { // If we aren't on the left col
+			if (checkForCellAt(row, col - 1)) { // If there is a cell
+				if (chkCell.getNumber() == getCellAt(row, col - 1).getNumber()) {
+					return true;
+				}
+			}
+		}
+
+		// Check down
+		else if (row < rows) { // If we aren't on the bottom (top) row
+			if (checkForCellAt(row + 1, col)) { // If there is a cell
+				if (chkCell.getNumber() == getCellAt(row + 1, col).getNumber()) {
+					return true;
+				}
+			}
+		}
+
+		// Check right
+		else if (col < cols) { // If we aren't on the left col
+			if (checkForCellAt(row, col + 1)) { // If there is a cell
+				if (chkCell.getNumber() == getCellAt(row, col + 1).getNumber()) {
+					return true;
+				}
+			}
+		}
+		else return false;
 	}
 
 	void moveCellTo(Cell& cell, int newRow, int newCol) {
@@ -966,7 +1013,7 @@ public:
 			}
 
 			playAgain(); // Resets grid
-			// placeRandom(); // Place a random cell
+			placeRandom(); // Place a random cell
 		}
 	}
 
