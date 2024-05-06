@@ -24,7 +24,7 @@
 
 #include <SDL.h>
 // #include <SDL_syswm.h> 
-#include <SDL_ttf.h> // Can't tell if working? --> Doesn't appear to be
+#include <SDL_ttf.h> // ONLY LINK DYNAMICALLY IF USING
 
 #include <cstdio>
 #include <memory>
@@ -37,9 +37,8 @@
 // OPENGL NOT ENABLED IN THIS VERSION | C++17 REQUIRED
 
 // TO DO
-	// Score
-	// Improve graphics --> Align numbers and render score
-	// Statically link to share with friends
+	// Render score
+
 
 
 std::random_device rd;
@@ -457,8 +456,6 @@ public:
 
 	}
 
-
-
 	std::vector<std::vector<std::optional<Cell>>>& getGridData() {
 		return gridData;
 	}
@@ -494,7 +491,7 @@ public:
 		else {
 			return false;
 		}
-}
+	}
 
 	Cell& getCellAt(int row, int col) {
 		return gridData[row][col].value();
@@ -952,7 +949,6 @@ public:
 
 	~MySDL_EventHandler() {}
 
-
 	void pollRestart() {
 		while (SDL_PollEvent(&event) != 0) {
 
@@ -967,7 +963,6 @@ public:
 			}
 		}
 	}
-
 
 	void pollEvent() {
 
@@ -1013,7 +1008,7 @@ public:
 			}
 
 			playAgain(); // Resets grid
-			placeRandom(); // Place a random cell
+			// placeRandom(); // Place a random cell
 		}
 	}
 
@@ -1024,7 +1019,9 @@ public:
 				grid.clearGrid();
 				grid.getScore().resetScore();
 				break;
-			
+			case SDLK_q:
+				renderer->quitSDL();
+				break;
 			}
 		}
 	}
@@ -1039,14 +1036,12 @@ public:
 		}
 	}
 
-
 private:
 	SDL_Window* window; // So events can manipulate the window (render is aware of window, should be okay)
 	SDL_Event event;
 	MySDL_Renderer* renderer; // So events can tell the renderer to do something
 
 	Grid& grid;
-
 
 	std::pair<int&, int&> getMousePosition() {
 		return { event.motion.x, event.motion.y };
@@ -1070,22 +1065,19 @@ public:
 		delete evHandler;
 	}
 
-
 	void start() {
 		if (!renderer || !evHandler) {
 			printf("Renderer or EventHandler is null!\n");
 			return; // Exit early if renderer or event handler is not initialized
 		}
 
-
 		while (!quit) {
 
 			evHandler->pollEvent();
 
-			// Big encapsulating rendering function here
-
 			renderer->renderAll();
-			// Check if quit event occurred
+
+			// Check if quit event occurred --> maybe redundant?
 			if (SDL_QuitRequested()) {
 				stop();
 			}
@@ -1093,7 +1085,7 @@ public:
 			if (grid.isFull()) {
 				system("cls");
 				printf("Game over, man!\n");
-				printf("Press r to play again!\n");
+				printf("Press r to play again or q to quit!\n");
 				while (grid.isFull()) {
 					evHandler->pollRestart();
 				}
